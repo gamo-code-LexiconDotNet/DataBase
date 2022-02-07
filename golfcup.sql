@@ -1,9 +1,9 @@
-### Setup database
+-- Setup database
 drop database if exists GolfCup;
 create database GolfCup;
 use GolfCup;
 
-### Create tables
+-- Create tables
 create table player(
 	pnr char(20) not null,
 	pname varchar(64),
@@ -35,7 +35,7 @@ create table jacket(
     size varchar(10),
     material varchar(32),
     primary key(brand, pnr),
-    foreign key(pnr) references player(pnr)
+    foreign key(pnr) references player(pnr) on delete cascade
 ) engine=innodb;
 
 create table club(
@@ -44,7 +44,7 @@ create table club(
     nr char(20),
     material varchar(32),
     primary key(pnr, snr, nr),
-    foreign key(pnr) references player(pnr),
+    foreign key(pnr) references player(pnr) on delete cascade,
     foreign key(snr) references construction(snr)
 ) engine=innodb;
 
@@ -52,7 +52,7 @@ create table player_competition(
 	pnr char(20),
     cname varchar(128),
     primary key(pnr, cname),
-    foreign key(pnr) references player(pnr),
+    foreign key(pnr) references player(pnr) on delete cascade,
     foreign key(cname) references competition(cname)
 ) engine=innodb;
 
@@ -61,11 +61,11 @@ create table competition_weather(
     wtype varchar(32),
     wtime datetime,
     primary key(cname, wtype),
-    foreign key(cname) references competition(cname),
+    foreign key(cname) references competition(cname), 
     foreign key(wtype) references weather(wtype)
 ) engine=innodb;
 
-### Insert data
+-- Insert data
 insert into player values("19970102-4321", "Johan Andersson", 25);
 insert into player values("19920304-6543", "Nicklas Johansson", 30);
 insert into player values("19870506-5432", "Annika Persson", 35);
@@ -82,25 +82,32 @@ insert into construction values("1234567890", 5);
 insert into club values("19920304-6543", "0123456789", "9876543210", "Wood");
 insert into club values("19870506-5432", "1234567890", "8765432109", "Wood");
 
-### Queries
+-- Queries
 select age from player where pname like "Johan Andersson";
+
 select cdate from competition where cname like "Big Golf Cup Skövde";
+
 select material from club where pnr like "Johan Andersson";
+
 select * from jacket where pnr like (
 	select pnr from player where pname like "Johan Andersson"
 );
+
 select pname from player where pnr in (
 	select pnr from player_competition where cname like "Big Golf Cup Skövde"
 );
+
 select windspeed from weather where wtype like (
 	select wtype from competition_weather where cname like "Big Golf Cup Skövde"
 ); 
+
 select * from player where age < 30;
 delete from jacket where pnr like (
 	select pnr from player where pname like "Johan Andersson"
 );
+
+SET SQL_SAFE_UPDATES = 0;
 delete from player where pname like "Nicklas Johansson";
+SET SQL_SAFE_UPDATES = 1;
+
 select avg(age) from player;
-
-
-
