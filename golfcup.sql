@@ -87,7 +87,9 @@ select age from player where pname like "Johan Andersson";
 
 select cdate from competition where cname like "Big Golf Cup Skövde";
 
-select material from club where pnr like "Johan Andersson";
+select material from club where pnr like (
+	select pnr from player where pname like "Johan Andersson"
+);
 
 select * from jacket where pnr like (
 	select pnr from player where pname like "Johan Andersson"
