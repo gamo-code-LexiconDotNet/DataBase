@@ -91,23 +91,53 @@ select material from club where pnr like (
 	select pnr from player where pname like "Johan Andersson"
 );
 
+select club.material as "Club material"
+from club
+join player
+on club.pnr = player.pnr
+where player.pname like "Johan Andersson";
+
 select * from jacket where pnr like (
 	select pnr from player where pname like "Johan Andersson"
 );
+
+select * 
+from jacket
+join player
+on jacket.pnr = player.pnr
+where player.pname like "Johan Andersson";
 
 select pname from player where pnr in (
 	select pnr from player_competition where cname like "Big Golf Cup Skövde"
 );
 
+select player.pname as "Player name"
+from player
+join player_competition
+on player_competition.pnr = player.pnr
+where player_competition.cname like "Big Golf Cup Skövde";
+
 select windspeed from weather where wtype like (
 	select wtype from competition_weather where cname like "Big Golf Cup Skövde"
-); 
+);
+
+select weather.windspeed as "Windspeed"
+from weather
+join competition_weather
+on weather.wtype = competition_weather.wtype
+where competition_weather.cname like "Big Golf Cup Skövde";
 
 select * from player where age < 30;
 
 delete from jacket where pnr like (
 	select pnr from player where pname like "Johan Andersson"
 );
+
+delete jacket
+from jacket
+join player
+on jacket.pnr = player.pnr
+where player.pname like "Johan Andersson";
 
 SET SQL_SAFE_UPDATES = 0;
 delete from player where pname like "Nicklas Johansson";
